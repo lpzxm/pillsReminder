@@ -1,4 +1,4 @@
-
+import { Link } from "react-router-dom";
 
 export const Error404 = () => {
 
@@ -12,7 +12,7 @@ export const Error404 = () => {
                         </h2>
                         <p className="text-2xl font-semibold md:text-3xl">Sorry, we couldn't find this page.</p>
                         <p className="mt-4 mb-8 dark:text-gray-600">But dont worry, you can find plenty of other things on our homepage.</p>
-                        <a rel="noopener noreferrer" href="#" className="px-8 py-3 font-semibold rounded dark:bg-violet-600 dark:text-gray-50">Back to homepage</a>
+                        <Link to={"/"}><a rel="noopener noreferrer" className="px-8 py-3 font-semibold rounded dark:bg-violet-600 dark:text-gray-50">Back to homepage</a></Link>
                     </div>
                 </div>
             </section>

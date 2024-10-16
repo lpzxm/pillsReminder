@@ -1,9 +1,12 @@
 import React from "react";
-import  ReactDOM  from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { createRoot } from 'react-dom/client'
-import { Error404 } from './components/common/Error404.jsx';
 import './index.css'
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Error404 } from './components/common/Error404.jsx';
+import { HomePage } from "./pages/homePage.jsx";
+import { AddAlarm } from "./components/common/alarms/addAlarms.jsx";
+import { ViewAlarms } from "./components/common/alarms/viewAlarms.jsx";
+import { EditAlarms } from "./components/common/alarms/editAlarms.jsx";
 
 const router = createBrowserRouter([
   {
@@ -14,12 +17,43 @@ const router = createBrowserRouter([
       </>
     ),
   },
+  {
+    path: "/",
+    element: (
+      <>
+        <HomePage />
+      </>
+    ),
+  },
+  {
+    path: "/alarms",
+    element: (
+      <>
+        <ViewAlarms />
+      </>
+    ),
+  },
+  {
+    path: "/alarms/addAlarms",
+    element: (
+      <>
+        <AddAlarm />
+      </>
+    ),
+  },
+  {
+    path: "/alarms/editAlarms/:id",
+    element: (
+      <>
+        <EditAlarms />
+      </>
+    ),
+  },
 
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-
-      <RouterProvider router={router} />
+    <RouterProvider router={router} />
   </React.StrictMode>
 )

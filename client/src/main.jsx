@@ -6,7 +6,6 @@ import { Error404 } from './components/common/Error404.jsx';
 import { HomePage } from "./pages/homePage.jsx";
 import { AddAlarm } from "./components/common/alarms/addAlarms.jsx";
 import { ViewAlarms } from "./components/common/alarms/viewAlarms.jsx";
-import { EditAlarms } from "./components/common/alarms/editAlarms.jsx";
 
 const router = createBrowserRouter([
   {
@@ -38,14 +37,6 @@ const router = createBrowserRouter([
     element: (
       <>
         <AddAlarm />
-      </>
-    ),
-  },
-  {
-    path: "/alarms/editAlarms/:id",
-    element: (
-      <>
-        <EditAlarms />
       </>
     ),
   },

@@ -1,21 +1,21 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Importar useNavigate para redirección
+import { useNavigate } from "react-router-dom";
 
 export const ViewAlarms = () => {
-    // Estado para almacenar las alarmas
     const [alarms, setAlarms] = useState([]);
     const [message, setMessage] = useState("");
-    const [editingAlarm, setEditingAlarm] = useState(null); // Alarma en edición
-    const [formData, setFormData] = useState({ name: "", time: "", description: "" }); // Datos del formulario
-    const navigate = useNavigate(); // Hook para redirección
+    const [editingAlarm, setEditingAlarm] = useState(null);
+    const [formData, setFormData] = useState({ name: "", time: "", description: "" });
+    const [showModal, setShowModal] = useState(false); // Estado para controlar el modal
+    const [alarmToDelete, setAlarmToDelete] = useState(null); // Alarma a eliminar
+    const navigate = useNavigate();
 
-    // Cargar las alarmas al montar el componente
     useEffect(() => {
         const fetchAlarms = async () => {
             try {
-                const response = await axios.get("https://pillsreminder.onrender.com/api/alarms");
-                setAlarms(response.data); // Guardar las alarmas en el estado
+                const response = await axios.get("http://localhost:4000/api/alarms");
+                setAlarms(response.data);
             } catch (error) {
                 console.error("Error al cargar las alarmas", error);
             }
@@ -24,57 +24,60 @@ export const ViewAlarms = () => {
         fetchAlarms();
     }, []);
 
+    // Mostrar el modal para confirmar la eliminación
+    const confirmDelete = (alarm) => {
+        setAlarmToDelete(alarm); // Guardar la alarma seleccionada
+        setShowModal(true); // Mostrar el modal
+    };
+
     // Manejar la eliminación de una alarma
-    const handleDelete = async (id) => {
+    const handleDelete = async () => {
         try {
-            await axios.delete(`https://pillsreminder.onrender.com/api/alarms/${id}`);
-            setAlarms(alarms.filter((alarm) => alarm.id !== id)); // Eliminar del estado
+            await axios.delete(`http://localhost:4000/api/alarms/${alarmToDelete.id}`);
+            setAlarms(alarms.filter((alarm) => alarm.id !== alarmToDelete.id));
             setMessage("Alarma eliminada con éxito.");
         } catch (error) {
             setMessage("Error al eliminar la alarma.");
             console.error(error);
+        } finally {
+            setShowModal(false); // Cerrar el modal
         }
     };
 
-    // Manejar la edición de una alarma
     const handleEdit = (alarm) => {
         setEditingAlarm(alarm);
-        setFormData({ name: alarm.name, time: alarm.time, description: alarm.description }); // Prellenar datos
+        setFormData({ name: alarm.name, time: alarm.time, description: alarm.description });
     };
 
-    // Manejar el cambio en el formulario
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({ ...prevData, [name]: value }));
     };
 
-    // Manejar la actualización de una alarma
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            const updatedAlarm = await axios.put(`https://pillsreminder.onrender.com/api/alarms/${editingAlarm.id}`, formData);
-            setAlarms(alarms.map((alarm) => (alarm.id === editingAlarm.id ? updatedAlarm.data : alarm))); // Actualizar en el estado
+            const updatedAlarm = await axios.put(`http://localhost:4000/api/alarms/${editingAlarm.id}`, formData);
+            setAlarms(alarms.map((alarm) => (alarm.id === editingAlarm.id ? updatedAlarm.data : alarm)));
             setMessage("Alarma actualizada con éxito.");
-            setEditingAlarm(null); // Cerrar el formulario
+            setEditingAlarm(null);
         } catch (error) {
             setMessage("Error al actualizar la alarma.");
             console.error(error);
         }
     };
 
-    // Manejar la redirección para agregar una nueva alarma
     const handleAddAlarm = () => {
-        navigate("/alarms/addAlarms"); // Cambia esto a la ruta que estés usando para agregar alarmas
+        navigate("/alarms/addAlarms");
     };
 
     return (
         <div className="max-w-3xl mx-auto p-8 bg-white rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-6 text-center">Tus Alarmas</h2>
+            <p>Tienes un máximo de <span className="font-bold">3 Alarmas</span> a registrar dentro del sistema.</p>
 
-            {/* Mensaje de éxito o error */}
             {message && <p className="mb-4 text-center text-green-500">{message}</p>}
 
-            {/* Mostrar formulario de edición si hay una alarma en edición */}
             {editingAlarm && (
                 <form onSubmit={handleUpdate} className="mb-6">
                     <h3 className="text-xl font-semibold mb-4">Editar Alarma</h3>
@@ -111,7 +114,7 @@ export const ViewAlarms = () => {
                     </button>
                     <button
                         type="button"
-                        onClick={() => setEditingAlarm(null)} // Cerrar el formulario
+                        onClick={() => setEditingAlarm(null)}
                         className="ml-4 px-4 py-2 bg-gray-400 text-white font-semibold rounded-lg shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300"
                     >
                         Cancelar
@@ -119,8 +122,7 @@ export const ViewAlarms = () => {
                 </form>
             )}
 
-            {/* Botón para agregar una nueva alarma */}
-            {alarms.length < 3 && ( // Mostrar el botón solo si hay menos de 3 alarmas
+            {alarms.length < 3 && (
                 <button
                     onClick={handleAddAlarm}
                     className="mb-6 px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
@@ -129,7 +131,6 @@ export const ViewAlarms = () => {
                 </button>
             )}
 
-            {/* Mostrar lista de alarmas */}
             {alarms.length === 0 ? (
                 <p className="text-center text-gray-500">No hay alarmas disponibles.</p>
             ) : (
@@ -140,9 +141,7 @@ export const ViewAlarms = () => {
                             className="p-4 bg-gray-100 rounded-lg shadow-sm flex justify-between items-center"
                         >
                             <div>
-                                <h3 className="text-xl font-semibold text-gray-800">
-                                    {alarm.name}
-                                </h3>
+                                <h3 className="text-xl font-semibold text-gray-800">{alarm.name}</h3>
                                 <p className="text-gray-600">Hora: {alarm.time}</p>
                                 <p className="text-gray-600">{alarm.description}</p>
                             </div>
@@ -154,7 +153,7 @@ export const ViewAlarms = () => {
                                     Editar
                                 </button>
                                 <button
-                                    onClick={() => handleDelete(alarm.id)}
+                                    onClick={() => confirmDelete(alarm)}
                                     className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
                                 >
                                     Eliminar
@@ -163,6 +162,30 @@ export const ViewAlarms = () => {
                         </li>
                     ))}
                 </ul>
+            )}
+
+            {/* Modal de confirmación */}
+            {showModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 className="text-xl font-bold mb-4">¿Estás seguro de que quieres eliminar esta alarma?</h2>
+                        <p>{alarmToDelete.name}</p>
+                        <div className="mt-6 flex justify-end">
+                            <button
+                                onClick={handleDelete}
+                                className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+                            >
+                                Eliminar
+                            </button>
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="ml-4 px-4 py-2 bg-gray-400 text-white font-semibold rounded-lg shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

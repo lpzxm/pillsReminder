@@ -14,7 +14,7 @@ export const ViewAlarms = () => {
     useEffect(() => {
         const fetchAlarms = async () => {
             try {
-                const response = await axios.get("http://localhost:4000/api/alarms");
+                const response = await axios.get("https://pillsreminder.onrender.com/api/alarms");
                 setAlarms(response.data); // Guardar las alarmas en el estado
             } catch (error) {
                 console.error("Error al cargar las alarmas", error);
@@ -27,7 +27,7 @@ export const ViewAlarms = () => {
     // Manejar la eliminación de una alarma
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:4000/api/alarms/${id}`);
+            await axios.delete(`https://pillsreminder.onrender.com/api/alarms/${id}`);
             setAlarms(alarms.filter((alarm) => alarm.id !== id)); // Eliminar del estado
             setMessage("Alarma eliminada con éxito.");
         } catch (error) {
@@ -52,7 +52,7 @@ export const ViewAlarms = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            const updatedAlarm = await axios.put(`http://localhost:4000/api/alarms/${editingAlarm.id}`, formData);
+            const updatedAlarm = await axios.put(`https://pillsreminder.onrender.com/api/alarms/${editingAlarm.id}`, formData);
             setAlarms(alarms.map((alarm) => (alarm.id === editingAlarm.id ? updatedAlarm.data : alarm))); // Actualizar en el estado
             setMessage("Alarma actualizada con éxito.");
             setEditingAlarm(null); // Cerrar el formulario

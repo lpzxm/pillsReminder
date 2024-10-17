@@ -10,7 +10,6 @@ export const getAllAlarms = async (req, res) => {
   }
 };
 
-// Obtener una alarma por ID
 export const getAlarmById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -26,7 +25,6 @@ export const getAlarmById = async (req, res) => {
   }
 };
 
-// Crear una nueva alarma
 export const createAlarm = async (req, res) => {
   const { name, time, description } = req.body;
   try {
@@ -39,7 +37,6 @@ export const createAlarm = async (req, res) => {
   }
 };
 
-// Actualizar una alarma
 export const updateAlarm = async (req, res) => {
   const { id } = req.params;
   const { name, time, description } = req.body;
@@ -54,7 +51,6 @@ export const updateAlarm = async (req, res) => {
   }
 };
 
-// Eliminar una alarma
 export const deleteAlarm = async (req, res) => {
   const { id } = req.params;
   try {

@@ -1,7 +1,32 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export const HomePage = () => {
+    const [currentTime, setCurrentTime] = useState("");
 
+    // Función para formatear la hora en formato de 12 horas
+    const formatTime = (date) => {
+        let hours = date.getHours();
+        const minutes = date.getMinutes();
+        const seconds = date.getSeconds();
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12; // Convertir a formato de 12 horas
+        const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
+        const secondsStr = seconds < 10 ? `0${seconds}` : seconds;
+        return `${hours}:${minutesStr}:${secondsStr} ${ampm}`;
+    };
+
+    // Actualizar el tiempo cada segundo
+    useEffect(() => {
+        const updateClock = () => {
+            const now = new Date();
+            setCurrentTime(formatTime(now));
+        };
+        updateClock(); // Actualizar de inmediato
+        const intervalId = setInterval(updateClock, 1000); // Actualizar cada segundo
+
+        return () => clearInterval(intervalId); // Limpiar el intervalo al desmontar
+    }, []);
 
     return (
         <>
@@ -11,6 +36,11 @@ export const HomePage = () => {
                     <p className="text-lg text-gray-700 mb-8">
                         Organiza tus medicamentos y nunca olvides una dosis.
                     </p>
+
+                    {/* Mostrar el reloj */}
+                    <div className="text-2xl font-semibold text-gray-800 mb-8">
+                        Hora actual: {currentTime}
+                    </div>
 
                     <div className="flex justify-center space-x-4">
                         <Link to="/alarms/addAlarms">
@@ -27,6 +57,5 @@ export const HomePage = () => {
                 </div>
             </div>
         </>
-
-    )
-}
+    );
+};

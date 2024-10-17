@@ -3,6 +3,32 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export const ViewAlarms = () => {
+    const [currentTime, setCurrentTime] = useState("");
+
+    // Función para formatear la hora en formato de 12 horas
+    const formatTime = (date) => {
+        let hours = date.getHours();
+        const minutes = date.getMinutes();
+        const seconds = date.getSeconds();
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12; // Convertir a formato de 12 horas
+        const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
+        const secondsStr = seconds < 10 ? `0${seconds}` : seconds;
+        return `${hours}:${minutesStr}:${secondsStr} ${ampm}`;
+    };
+
+    // Actualizar el tiempo cada segundo
+    useEffect(() => {
+        const updateClock = () => {
+            const now = new Date();
+            setCurrentTime(formatTime(now));
+        };
+        updateClock(); // Actualizar de inmediato
+        const intervalId = setInterval(updateClock, 1000); // Actualizar cada segundo
+
+        return () => clearInterval(intervalId); // Limpiar el intervalo al desmontar
+    }, []);
+
     const [alarms, setAlarms] = useState([]);
     const [message, setMessage] = useState("");
     const [editingAlarm, setEditingAlarm] = useState(null);
@@ -72,10 +98,13 @@ export const ViewAlarms = () => {
     };
 
     return (
-        <div className="max-w-3xl mx-auto p-8 bg-white rounded-lg shadow-lg">
+        <div className="max-w-3xl mx-auto p-8 bg-white rounded-lg shadow-lg justify-center ">
             <h2 className="text-2xl font-bold mb-6 text-center">Tus Alarmas</h2>
             <p>Tienes un máximo de <span className="font-bold">3 Alarmas</span> a registrar dentro del sistema.</p>
-
+            {/* Mostrar el reloj */}
+            <div className="text-2xl font-semibold text-gray-800 mb-8">
+                Hora actual: {currentTime}
+            </div>
             {message && <p className="mb-4 text-center text-green-500">{message}</p>}
 
             {editingAlarm && (

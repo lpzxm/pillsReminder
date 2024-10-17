@@ -11,7 +11,7 @@ export const AlarmChecker = () => {
     useEffect(() => {
         const fetchAlarms = async () => {
             try {
-                const response = await axios.get("http://localhost:4000/api/alarms");
+                const response = await axios.get("https://pillsreminder.onrender.com/alarms");
                 setAlarms(response.data);  // Cargar las alarmas desde el servidor
             } catch (error) {
                 console.error("Error al cargar las alarmas", error);

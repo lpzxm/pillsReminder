@@ -40,7 +40,7 @@ export const ViewAlarms = () => {
     useEffect(() => {
         const fetchAlarms = async () => {
             try {
-                const response = await axios.get("https://pillsreminder.onrender.com/alarms");
+                const response = await axios.get("https://pillsreminder.onrender.com/api/alarms");
                 setAlarms(response.data);
             } catch (error) {
                 console.error("Error al cargar las alarmas", error);

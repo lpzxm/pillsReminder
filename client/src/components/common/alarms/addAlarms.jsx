@@ -17,7 +17,7 @@ export const AddAlarm = () => {
         };
 
         try {
-            const response = await axios.post("https://pillsreminder.onrender.com/alarms", newAlarm);
+            const response = await axios.post("https://pillsreminder.onrender.com/api/alarms", newAlarm);
             if (response.status === 201) {
                 setMessage("Alarma añadida con éxito.");
                 setName("");
